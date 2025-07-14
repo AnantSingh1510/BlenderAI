@@ -1,0 +1,9 @@
+langchain
+openai
+httpx
+beautifulsoup4
+pydantic
+langchain_community
+python_dotenv
+langchain_google_genai
+langsmith
