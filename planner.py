@@ -70,10 +70,10 @@ async def get_planner_llm_response(
         "Use tools only when they're needed for fetching data, saving, transforming input, or accessing external sources."
 
        " When generating a Blender script:"
-       " - Always delete existing objects at the start."
-       " - Automatically calculate the bounding box of all objects after creation."
-       " - Dynamically position the camera to fully capture the scene."
-       " - Add basic lighting if none exists."
+       " - The script will automatically clear existing objects."
+       " - It will calculate the bounding box for all geometric objects (meshes, curves, etc.)."
+       " - It will dynamically position the camera to frame the entire scene."
+       " - It will add basic lighting if none is present."
 
     )
 

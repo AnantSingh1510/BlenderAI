@@ -56,26 +56,15 @@ print(f"Render output path set to: {{scene.render.filepath}}")
 {user_code}
 
 # After user code, check what we have and fix common issues
-mesh_objects = [obj for obj in scene.objects if obj.type == 'MESH']
-print(f"Found {{len(mesh_objects)}} mesh objects in scene")
+supported_types = {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'VOLUME', 'GPENCIL'}
+geom_objects = [obj for obj in scene.objects if obj.type in supported_types and hasattr(obj, 'bound_box')]
+print(f"Found {{len(geom_objects)}} geometric objects in scene")
 
-if not mesh_objects:
-    print("No mesh objects found! Creating a default cube for testing...")
-    bpy.ops.mesh.primitive_cube_add(location=(0, 0, 0))
-    cube = bpy.context.object
-    # Add basic material
-    mat = bpy.data.materials.new(name="DefaultMaterial")
-    mat.use_nodes = True
-    bsdf = mat.node_tree.nodes["Principled BSDF"]
-    bsdf.inputs[0].default_value = (0.8, 0.2, 0.2, 1.0)  # Red
-    cube.data.materials.append(mat)
-    mesh_objects = [cube]
-
-# Calculate bounding box of all mesh objects
-if mesh_objects:
+# Calculate bounding box of all geometric objects
+if geom_objects:
     # Get world coordinates of all vertices
     all_coords = []
-    for obj in mesh_objects:
+    for obj in geom_objects:
         for vertex in obj.bound_box:
             world_coord = obj.matrix_world @ Vector(vertex)
             all_coords.append(world_coord)
@@ -201,7 +190,7 @@ except Exception as e:
             capture_output=True,
             text=True,
             env=env,
-            timeout=90
+            timeout=180
         )
 
         # Clean up script file
