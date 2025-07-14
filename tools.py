@@ -33,7 +33,7 @@ async def run_blender_script_tool(tool_input: dict) -> str:
         if tool_input.get("texture"):
             texture_type = tool_input.get("texture")
             if texture_type == "checker":
-                texture_code = """
+                texture_code = '''
 # Apply checker texture to the last object
 if bpy.context.object:
     obj = bpy.context.object
@@ -50,7 +50,21 @@ if bpy.context.object:
         obj.data.materials[0] = mat
     else:
         obj.data.materials.append(mat)
-"""
+'''
+        modifier_code = ""
+        if tool_input.get("modifier"):
+            modifier_type = tool_input.get("modifier")
+            modifier_params = tool_input.get("modifier_params", {})
+            
+            modifier_code = f'\\n# Apply {modifier_type} modifier to the last object\\n'
+            modifier_code += 'if bpy.context.object:\\n'
+            modifier_code += '    obj = bpy.context.object\\n'
+            modifier_code += f'    modifier = obj.modifiers.new(name="{modifier_type}", type=\'{modifier_type.upper()}\')\\n'
+            for key, value in modifier_params.items():
+                if isinstance(value, str):
+                    modifier_code += f"    modifier.{key} = '{value}'\\n"
+                else:
+                    modifier_code += f"    modifier.{key} = {value}\\n"
 
         # Append render configuration
         render_config = f'''
@@ -80,8 +94,10 @@ print(f"Render output path set to: {{scene.render.filepath}}")
 
 {texture_code}
 
+{modifier_code}
+
 # After user code, check what we have and fix common issues
-supported_types = {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'VOLUME', 'GPENCIL'}
+supported_types = {{'MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'VOLUME', 'GPENCIL'}}
 geom_objects = [obj for obj in scene.objects if obj.type in supported_types and hasattr(obj, 'bound_box')]
 print(f"Found {{len(geom_objects)}} geometric objects in scene")
 
@@ -228,7 +244,7 @@ except Exception as e:
         if proc.returncode != 0:
             error_msg = proc.stderr.strip() if proc.stderr else "Unknown error"
             stdout_msg = proc.stdout.strip() if proc.stdout else "No output"
-            return f"Blender execution failed (code {proc.returncode}): {error_msg}\nOutput: {stdout_msg}"
+            return f"Blender execution failed (code {proc.returncode}): {error_msg}\\nOutput: {stdout_msg}"
 
         # Print stdout for debugging
         if proc.stdout:
@@ -237,7 +253,7 @@ except Exception as e:
         # Verify output file exists
         if not os.path.exists(output_path):
             stdout_msg = proc.stdout.strip() if proc.stdout else "No output"
-            return f"Blender ran but no output file created at: {output_path}\nBlender output: {stdout_msg}"
+            return f"Blender ran but no output file created at: {output_path}\\nBlender output: {stdout_msg}"
 
         # Try to open the file (optional, don't fail if this doesn't work)
         try:

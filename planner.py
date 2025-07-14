@@ -75,6 +75,7 @@ async def get_planner_llm_response(
        " - It will dynamically position the camera to frame the entire scene."
        " - It will add basic lighting if none is present."
        " - To apply a texture, include a `texture` parameter in the `RunBlenderScript` tool call (e.g., `\"texture\": \"checker\"`)."
+       " - To apply a modifier, include a `modifier` parameter with the modifier name (e.g., `\"modifier\": \"SUBSURFACE\"`) and an optional `modifier_params` dictionary for its settings (e.g., `\"modifier_params\": {\"levels\": 2}`)."
 
     )
 
@@ -93,4 +94,4 @@ def parse_planner_output(raw: str) -> PlannerResponseModel:
                 return PlannerResponseModel.model_validate_json(match.group())
         except Exception:
             pass
-        return PlannerResponseModel(final=True, answer="❌ Could not parse Gemini planner output.")
+        return PlannerResponseModel(final=True, answer="Could not parse Gemini planner output.")
