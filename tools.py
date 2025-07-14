@@ -29,6 +29,29 @@ async def run_blender_script_tool(tool_input: dict) -> str:
         if "import bpy" not in user_code:
             user_code = "import bpy\n" + user_code
 
+        texture_code = ""
+        if tool_input.get("texture"):
+            texture_type = tool_input.get("texture")
+            if texture_type == "checker":
+                texture_code = """
+# Apply checker texture to the last object
+if bpy.context.object:
+    obj = bpy.context.object
+    mat = bpy.data.materials.new(name="CheckerMaterial")
+    mat.use_nodes = True
+    bsdf = mat.node_tree.nodes.get("Principled BSDF")
+    
+    checker_tex = mat.node_tree.nodes.new("ShaderNodeTexChecker")
+    checker_tex.inputs["Scale"].default_value = 20.0
+    
+    mat.node_tree.links.new(bsdf.inputs["Base Color"], checker_tex.outputs["Color"])
+    
+    if obj.data.materials:
+        obj.data.materials[0] = mat
+    else:
+        obj.data.materials.append(mat)
+"""
+
         # Append render configuration
         render_config = f'''
 import bpy
@@ -54,6 +77,8 @@ print(f"Render output path set to: {{scene.render.filepath}}")
 
 # Execute user code FIRST
 {user_code}
+
+{texture_code}
 
 # After user code, check what we have and fix common issues
 supported_types = {'MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'VOLUME', 'GPENCIL'}

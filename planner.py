@@ -74,6 +74,7 @@ async def get_planner_llm_response(
        " - It will calculate the bounding box for all geometric objects (meshes, curves, etc.)."
        " - It will dynamically position the camera to frame the entire scene."
        " - It will add basic lighting if none is present."
+       " - To apply a texture, include a `texture` parameter in the `RunBlenderScript` tool call (e.g., `\"texture\": \"checker\"`)."
 
     )
 
