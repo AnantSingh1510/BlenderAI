@@ -41,26 +41,6 @@ The system uses a multi-stage pipeline:
 - Google AI API key
 - Required Python packages (see `requirements.txt`)
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/react-3d-generator.git
-cd react-3d-generator
-```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Set up your Google AI API key:
-```bash
-export GOOGLE_AI_API_KEY="your-api-key-here"
-```
-
-4. Configure Blender path in `config.py`
-
 ## Usage
 
 ### Basic Usage
@@ -197,6 +177,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Your Name - your.email@example.com
-
-Project Link: [https://github.com/yourusername/react-3d-generator](https://github.com/yourusername/react-3d-generator)
+Anant Singh - anantsingh4444@gmail.com
